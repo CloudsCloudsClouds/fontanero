@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=2]
+
+[sub_resource type="PhysicsMaterial" id=3]
+friction = 0.0
+bounce = 0.2
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends RigidBody2D
+
+
+func _draw():
+	draw_circle(Vector2.ZERO, 2.8, Color(\"7ec4c1\"))
+
+func is_water() -> bool:
+	return true
+"
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 2.0
+
+[node name="Water" type="RigidBody2D"]
+collision_layer = 16
+collision_mask = 16
+mass = 0.1
+physics_material_override = SubResource( 3 )
+script = SubResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )

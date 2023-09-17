@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/water_drop.png" type="Texture" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Area2D
+
+
+func _on_WaterDrain_area_entered(area):
+	if area.has_method(\"realese_water\"):
+		area.realese_water()
+		
+"
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 1.0
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Sprite
+
+var sec: float = 0
+
+func _physics_process(delta):
+	sec += delta
+	if sec >= 1:
+		sec = 0
+		if position.y != 0:
+			position.y = 0
+		else:
+			position.y += 1
+"
+
+[node name="WaterDrain" type="Area2D"]
+collision_layer = 2
+collision_mask = 2
+script = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 0.439216, 0.215686, 0.498039, 1 )
+texture = ExtResource( 1 )
+script = SubResource( 3 )
+
+[connection signal="area_entered" from="." to="." method="_on_WaterDrain_area_entered"]

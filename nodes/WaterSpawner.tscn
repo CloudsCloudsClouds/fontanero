@@ -1,0 +1,82 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://nodes/Water.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+enum DIR {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+}
+
+export var water: PackedScene
+export var water_p_second := 1
+export var is_active: bool = true
+
+export (DIR) var direction
+
+var counter := 0.0
+
+var wps: float
+
+var init_water: int
+func _ready():
+	init_water = water_p_second
+	wps = 1 / float(water_p_second)
+	$Timer.start(20)
+
+
+func _physics_process(delta):
+	if is_active:
+		counter += delta
+	if counter > wps:
+		var new: RigidBody2D = water.instance()
+		get_parent().add_child(new)
+		
+		new.position = position
+		counter = 0
+		match direction:
+			DIR.UP:
+				new.apply_central_impulse(Vector2(randf(), -50))
+			DIR.DOWN:
+				new.apply_central_impulse(Vector2(randf(), 12))
+			DIR.LEFT:
+				new.apply_central_impulse(Vector2.LEFT * 15)
+			DIR.RIGHT:
+				new.apply_central_impulse(Vector2.RIGHT * 15)
+
+
+func _on_Timer_timeout():
+	water_p_second += water_p_second + 1
+	wps = 1 / float(water_p_second)
+
+
+func _on_WaterSpawner_area_entered(area):
+	if is_active:
+		is_active = false
+		get_tree().call_group(\"audio\", \"play_hit\")
+		get_tree().call_group(\"ui\", \"add_points\", 100)
+		water_p_second = init_water
+"
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 1.0
+
+[node name="WaterSpawner" type="Area2D"]
+collision_layer = 2
+collision_mask = 2
+monitorable = false
+script = SubResource( 1 )
+water = ExtResource( 1 )
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[connection signal="area_entered" from="." to="." method="_on_WaterSpawner_area_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

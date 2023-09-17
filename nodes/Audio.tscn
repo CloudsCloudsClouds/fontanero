@@ -1,0 +1,90 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://assets/audio/hit.wav" type="AudioStream" id=1]
+[ext_resource path="res://assets/audio/jump.wav" type="AudioStream" id=2]
+[ext_resource path="res://assets/audio/song1.mp3" type="AudioStream" id=3]
+[ext_resource path="res://assets/audio/swing.wav" type="AudioStream" id=4]
+[ext_resource path="res://assets/audio/waterdrain.wav" type="AudioStream" id=5]
+[ext_resource path="res://assets/audio/maxwater.wav" type="AudioStream" id=6]
+[ext_resource path="res://assets/audio/waterget.wav" type="AudioStream" id=7]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Node
+
+
+export var hit_sound: AudioStreamSample
+export var intro_sound: AudioStreamMP3
+export var jump_sound: AudioStreamSample
+export var swing_sound: AudioStreamSample
+export var getwater_sound: AudioStreamSample
+export var waterdrain_sound: AudioStreamSample
+export var maxwater_sound: AudioStreamSample
+
+func play_hit():
+	var hit = AudioStreamPlayer.new()
+	hit.set_stream(hit_sound)
+	add_child(hit)
+	hit.play(0)
+
+
+func play_intro():
+	pass
+
+
+func play_jump():
+	var jump = AudioStreamPlayer.new()
+	jump.set_stream(jump_sound)
+	add_child(jump)
+	jump.play()
+
+
+func play_swing():
+	var swing = AudioStreamPlayer.new()
+	swing.set_stream(swing_sound)
+	add_child(swing)
+	swing.play()
+
+
+func play_getwater():
+	var getwater = AudioStreamPlayer.new()
+	getwater.set_stream(getwater_sound)
+	add_child(getwater)
+	getwater.play()
+
+
+func play_waterdrain():
+	var waterdrain = AudioStreamPlayer.new()
+	waterdrain.set_stream(waterdrain_sound)
+	add_child(waterdrain)
+	waterdrain.play()
+
+
+func play_maxwater():
+	var maxwater = AudioStreamPlayer.new()
+	maxwater.set_stream(maxwater_sound)
+	add_child(maxwater)
+	maxwater.play()
+
+
+
+func _on_Timer_timeout():
+	for node in get_children():
+		if node is AudioStreamPlayer:
+			if !node.is_playing():
+				node.queue_free()
+"
+
+[node name="Audio" type="Node" groups=["audio"]]
+script = SubResource( 3 )
+hit_sound = ExtResource( 1 )
+intro_sound = ExtResource( 3 )
+jump_sound = ExtResource( 2 )
+swing_sound = ExtResource( 4 )
+getwater_sound = ExtResource( 7 )
+waterdrain_sound = ExtResource( 5 )
+maxwater_sound = ExtResource( 6 )
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

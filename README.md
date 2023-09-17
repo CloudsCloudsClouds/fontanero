@@ -16,3 +16,5 @@ Para la comunidad de videojuegos.
 
 Este proyecto no esta abandonado. Repito. ¡No esta abandonado!
 Solo me aburri xd, trabajemos en esto mas tarde
+
+Solo por cierto, todo los assets hechos por mi son CC0. 

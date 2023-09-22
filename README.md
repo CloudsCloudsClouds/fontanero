@@ -8,6 +8,7 @@ Para la comunidad de videojuegos.
 - [ ] Enemigos (Ratas, palomas y cucarachas)
 - [ ] Condicion victoria derrota
 - [ ] Pantalla inicial con cinematica
+- [X] Plataformas distintas
 - [ ] Forma de guardar puntaje
 - [ ] Multijugador (aun si ahi estan los assets)
 - [ ] Niveles

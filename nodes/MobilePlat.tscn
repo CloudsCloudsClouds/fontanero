@@ -1,0 +1,86 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/tilemap_plat.png" type="Texture" id=1]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends Line2D
+
+
+onready var tween := get_node(\"Tween\")
+onready var body := get_node(\"StaticBody2D\")
+onready var current_point: Vector2
+onready var next_point:Vector2
+var forward := true
+var index: float
+
+export var speed: int
+
+func _ready():
+	if points.size() != 1:
+		current_point = points[0]
+		next_point = points[1]
+		index = 1
+		
+		_move()
+
+
+func _move():
+	var timing = current_point.distance_to(next_point) / speed
+	tween.interpolate_property(body, \"position\", current_point, next_point, timing, Tween.TRANS_CUBIC, Tween.EASE_IN_OUT)
+	tween.start()
+
+
+func _on_Tween_tween_all_completed():
+	if forward:
+		index += 1
+		if index == points.size():
+			forward = false
+			index -= 2
+	else:
+		index -= 1
+		if index == -1:
+			forward = true
+			index += 2
+	
+	if forward:
+		current_point = points[index -  1]
+		next_point = points[index]
+		
+		_move()
+	else:
+		current_point = points[index + 1]
+		next_point = points[index]
+		
+		_move()
+"
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 4, 1 )
+
+[node name="MobilePlat" type="Line2D"]
+z_index = -1
+width = 0.0
+default_color = Color( 0.4, 0.501961, 1, 1 )
+script = SubResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="StaticBody2D" type="KinematicBody2D" parent="."]
+motion/sync_to_physics = true
+moving_platform_apply_velocity_on_leave = 2
+
+[node name="Sprite" type="Sprite" parent="StaticBody2D"]
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 0, 8, 8, 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 0, -3 )
+shape = SubResource( 1 )
+one_way_collision = true
+
+[node name="Tween" type="Tween" parent="."]
+playback_process_mode = 0
+
+[connection signal="tween_all_completed" from="Tween" to="." method="_on_Tween_tween_all_completed"]

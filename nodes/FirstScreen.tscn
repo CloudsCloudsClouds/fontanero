@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://nodes/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://nodes/TileMap.tscn" type="PackedScene" id=2]
 [ext_resource path="res://nodes/WaterSpawner.tscn" type="PackedScene" id=3]
 [ext_resource path="res://nodes/Audio.tscn" type="PackedScene" id=4]
+[ext_resource path="res://nodes/MobilePlat.tscn" type="PackedScene" id=5]
+[ext_resource path="res://nodes/FallingPlatform.tscn" type="PackedScene" id=6]
 [ext_resource path="res://nodes/WaterDrain.tscn" type="PackedScene" id=8]
 
 [sub_resource type="GDScript" id=1]
@@ -80,3 +82,11 @@ position = Vector2( 4, 36 )
 shape = SubResource( 2 )
 
 [node name="Audio" parent="." instance=ExtResource( 4 )]
+
+[node name="MobilePlat" parent="." instance=ExtResource( 5 )]
+position = Vector2( -24, -32 )
+points = PoolVector2Array( -24, -8, -8, 4, 0, -28, 84, -28 )
+speed = 10
+
+[node name="FallingPlatform" parent="." instance=ExtResource( 6 )]
+position = Vector2( -36, -20 )

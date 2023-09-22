@@ -1,0 +1,196 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://assets/plumber2.png" type="Texture" id=1]
+[ext_resource path="res://assets/water_drop.png" type="Texture" id=2]
+[ext_resource path="res://nodes/Water.tscn" type="PackedScene" id=3]
+[ext_resource path="res://nodes/PlayerScript.tres.gd" type="Script" id=4]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 2, 3.5 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 1 )
+region = Rect2( 8, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 1 )
+region = Rect2( 0, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 1 )
+region = Rect2( 8, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 1 )
+region = Rect2( 16, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=22]
+atlas = ExtResource( 1 )
+region = Rect2( 24, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=23]
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 1 )
+region = Rect2( 40, 0, 8, 8 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 1 )
+region = Rect2( 48, 0, 8, 8 )
+
+[sub_resource type="SpriteFrames" id=26]
+animations = [ {
+"frames": [ SubResource( 17 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 18 ) ],
+"loop": true,
+"name": "jump",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
+"loop": true,
+"name": "move",
+"speed": 18.0
+}, {
+"frames": [ SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ) ],
+"loop": false,
+"name": "punch",
+"speed": 18.0
+} ]
+
+[sub_resource type="CapsuleShape2D" id=13]
+radius = 1.0
+height = 2.0
+
+[sub_resource type="GDScript" id=15]
+script/source = "extends Area2D
+
+
+var water_limit := 10
+var water := 0
+
+export var water_object: PackedScene
+
+var water_type: RigidBody2D
+
+var can_waterget := false
+
+func _ready():
+	water_type = water_object.instance()
+	_color()
+
+func _on_PunchArea_body_entered(body):
+	if body.has_method(\"is_water\"):
+		if water < water_limit:
+			if !can_waterget:
+				can_waterget = !can_waterget
+				get_tree().call_group(\"audio\", \"play_getwater\")
+			body.queue_free()
+			water += 1
+			_color()
+
+func realese_water():
+	get_tree().call_group(\"ui\", \"add_points\", water * 5)
+	water = 0
+	get_tree().call_group(\"audio\", \"play_waterdrain\")
+	_color()
+
+func _color():
+	if water == 0:
+		$Sprite.set_color(\"7ec4c1\")
+	elif water > 0 and water <= 3:
+		$Sprite.set_color(\"34859d\")
+	elif water > 3 and water <= 6:
+		$Sprite.set_color(\"647d34\")
+	elif water > 6 and water <= 9:
+		$Sprite.set_color(\"e4943a\")
+	elif water == 10:
+		$Sprite.set_color(\"9d303b\")
+		get_tree().call_group(\"audio\", \"play_maxwater\")
+"
+
+[sub_resource type="CapsuleShape2D" id=14]
+radius = 3.0
+height = 1.0
+
+[sub_resource type="GDScript" id=16]
+script/source = "extends Sprite
+
+
+var timer := 0.0
+
+func set_color(col: Color):
+	set_self_modulate(col)
+
+
+
+func _physics_process(delta):
+	timer += delta
+	if timer >= 1:
+		if position.y == -11:
+			position.y = -12
+		else:
+			position.y = -11
+		
+		timer = 0
+	
+"
+
+[node name="Player2" type="KinematicBody2D"]
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+ui_up = "ui_up1"
+ui_down = "ui_down1"
+ui_left = "ui_left1"
+ui_right = "ui_right1"
+ui_attack = "ui_attack1"
+ui_start = "ui_start1"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -4 )
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -4 )
+frames = SubResource( 26 )
+animation = "punch"
+
+[node name="Pusher" type="StaticBody2D" parent="."]
+collision_layer = 16
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pusher"]
+position = Vector2( 0, -5 )
+shape = SubResource( 13 )
+
+[node name="PunchArea" type="Area2D" parent="."]
+z_index = 1
+collision_layer = 18
+collision_mask = 18
+script = SubResource( 15 )
+water_object = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PunchArea"]
+position = Vector2( 3, -4 )
+rotation = 1.5708
+shape = SubResource( 14 )
+disabled = true
+
+[node name="Sprite" type="Sprite" parent="PunchArea"]
+position = Vector2( 0, -12 )
+texture = ExtResource( 2 )
+script = SubResource( 16 )
+
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
+[connection signal="body_entered" from="PunchArea" to="PunchArea" method="_on_PunchArea_body_entered"]

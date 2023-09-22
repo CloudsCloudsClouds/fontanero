@@ -1,164 +1,68 @@
 [gd_scene load_steps=20 format=2]
 
-[ext_resource path="res://assets/plumber1.png" type="Texture" id=1]
-[ext_resource path="res://nodes/Water.tscn" type="PackedScene" id=2]
-[ext_resource path="res://assets/water_drop.png" type="Texture" id=3]
-
-[sub_resource type="GDScript" id=2]
-script/source = "extends KinematicBody2D
-
-export var ui_up: String = \"ui_up\"
-export var ui_down: String = \"ui_down\"
-export var ui_left: String = \"ui_left\"
-export var ui_right: String = \"ui_right\"
-export var ui_attack: String = \"ui_attack\"
-export var ui_start: String = \"ui_start\"
-
-var velocity := Vector2.ZERO
-export var jump_height := 10
-export var jump_time := 0.3
-
-var jump_force: float
-var grav: float
-
-var is_attack: bool = false
-
-func _ready():
-	grav = (2 * jump_height) / pow(jump_time, 2)
-	jump_force = -(2 * jump_height) / jump_time
-
-
-func _physics_process(delta):
-	if is_attack:
-		attack(delta)
-	elif !is_attack:
-		move(delta)
-
-
-func move(delta):
-	velocity = move_and_slide(velocity, Vector2.UP, false, 4, 0.7853, false)
-	
-	var inp_map = Input.get_action_strength(\"ui_right\") - Input.get_action_strength(\"ui_left\")
-	
-	if is_on_floor():
-		if Input.is_action_just_pressed(\"ui_up\"):
-			velocity.y = jump_force
-			get_tree().call_group(\"audio\", \"play_jump\")
-		
-		if Input.is_action_just_pressed(\"ui_attack\"):
-			is_attack = true
-	
-	velocity.y = clamp(velocity.y + grav * delta, -300, 100)
-	
-	velocity.x = 35 * inp_map 
-	
-	anim()
-	$Pusher.constant_linear_velocity = velocity / 2
-
-
-func attack(delta):
-	velocity.x = 0
-	if !$AnimatedSprite.animation == \"punch\":
-		$AnimatedSprite.play(\"punch\")
-		get_tree().call_group(\"audio\", \"play_swing\")
-	
-	if $AnimatedSprite.frame == 0:
-		$AnimatedSprite.speed_scale = 2
-	elif $AnimatedSprite.frame == 1:
-		$AnimatedSprite.speed_scale = 1
-	elif $AnimatedSprite.frame == 2:
-		$AnimatedSprite.speed_scale = 2
-		$PunchArea/CollisionShape2D.disabled = false
-	elif $AnimatedSprite.frame == 3:
-		$AnimatedSprite.speed_scale = 1
-
-
-func anim():
-	match sign(velocity.x):
-		-1.0:
-			$AnimatedSprite.flip_h = true
-			$PunchArea.scale.x = -1
-		1.0:
-			$AnimatedSprite.flip_h = false
-			$PunchArea.scale.x = 1
-
-
-	if velocity.x != 0:
-		$AnimatedSprite.play(\"move\")
-	else:
-		$AnimatedSprite.play(\"idle\")
-	
-	if !is_on_floor():
-		$AnimatedSprite.play(\"jump\")
-	
-
-
-func _on_AnimatedSprite_animation_finished():
-	if is_attack:
-		is_attack = !is_attack
-		$AnimatedSprite.speed_scale = 1
-		$PunchArea/CollisionShape2D.disabled = true
-		$PunchArea.can_waterget = false
-"
+[ext_resource path="res://assets/plumber3.png" type="Texture" id=1]
+[ext_resource path="res://assets/water_drop.png" type="Texture" id=2]
+[ext_resource path="res://nodes/Water.tscn" type="PackedScene" id=3]
+[ext_resource path="res://nodes/PlayerScript.tres.gd" type="Script" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 2, 3.5 )
 
-[sub_resource type="AtlasTexture" id=3]
+[sub_resource type="AtlasTexture" id=17]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=4]
+[sub_resource type="AtlasTexture" id=18]
 atlas = ExtResource( 1 )
 region = Rect2( 8, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=5]
+[sub_resource type="AtlasTexture" id=19]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=6]
+[sub_resource type="AtlasTexture" id=20]
 atlas = ExtResource( 1 )
 region = Rect2( 8, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=7]
+[sub_resource type="AtlasTexture" id=21]
 atlas = ExtResource( 1 )
 region = Rect2( 16, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=8]
+[sub_resource type="AtlasTexture" id=22]
 atlas = ExtResource( 1 )
 region = Rect2( 24, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=9]
+[sub_resource type="AtlasTexture" id=23]
 atlas = ExtResource( 1 )
 region = Rect2( 32, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=10]
+[sub_resource type="AtlasTexture" id=24]
 atlas = ExtResource( 1 )
 region = Rect2( 40, 0, 8, 8 )
 
-[sub_resource type="AtlasTexture" id=11]
+[sub_resource type="AtlasTexture" id=25]
 atlas = ExtResource( 1 )
 region = Rect2( 48, 0, 8, 8 )
 
-[sub_resource type="SpriteFrames" id=12]
+[sub_resource type="SpriteFrames" id=26]
 animations = [ {
-"frames": [ SubResource( 3 ) ],
-"loop": true,
+"frames": [ SubResource( 17 ) ],
+"loop": false,
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 4 ) ],
-"loop": true,
+"frames": [ SubResource( 18 ) ],
+"loop": false,
 "name": "jump",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ) ],
+"frames": [ SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
 "loop": true,
 "name": "move",
 "speed": 18.0
 }, {
-"frames": [ SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ) ],
-"loop": false,
+"frames": [ SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ) ],
+"loop": true,
 "name": "punch",
 "speed": 18.0
 } ]
@@ -241,11 +145,17 @@ func _physics_process(delta):
 	
 "
 
-[node name="Player1" type="KinematicBody2D"]
-script = SubResource( 2 )
+[node name="Player3" type="KinematicBody2D"]
+script = ExtResource( 4 )
 __meta__ = {
 "_edit_group_": true
 }
+ui_up = "ui_up2"
+ui_down = "ui_down2"
+ui_left = "ui_left2"
+ui_right = "ui_right2"
+ui_attack = "ui_attack2"
+ui_start = "ui_start2"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -4 )
@@ -253,8 +163,8 @@ shape = SubResource( 1 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 position = Vector2( 0, -4 )
-frames = SubResource( 12 )
-animation = "idle"
+frames = SubResource( 26 )
+animation = "jump"
 
 [node name="Pusher" type="StaticBody2D" parent="."]
 collision_layer = 16
@@ -269,7 +179,7 @@ z_index = 1
 collision_layer = 18
 collision_mask = 18
 script = SubResource( 15 )
-water_object = ExtResource( 2 )
+water_object = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PunchArea"]
 position = Vector2( 3, -4 )
@@ -279,7 +189,7 @@ disabled = true
 
 [node name="Sprite" type="Sprite" parent="PunchArea"]
 position = Vector2( 0, -12 )
-texture = ExtResource( 3 )
+texture = ExtResource( 2 )
 script = SubResource( 16 )
 
 [connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]

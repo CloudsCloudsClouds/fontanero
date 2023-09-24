@@ -64,10 +64,9 @@ func _on_Timer_timeout():
 
 func _on_WaterSpawner_area_entered(area):
 	if is_active:
-		print_debug(life)
 		if life >= 0:
 			life -= 1
-			water_p_second *= 0.4
+			water_p_second *= 0.8
 			wps = 1 / float(water_p_second)
 			get_tree().call_group(\"audio\", \"play_inchit\")
 			get_tree().call_group(\"ui\", \"add_points\", 25)

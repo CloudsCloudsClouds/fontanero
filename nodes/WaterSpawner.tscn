@@ -13,8 +13,10 @@ enum DIR {
 }
 
 export var water: PackedScene
-export var water_p_second := 1
+export var water_p_second = 1
 export var is_active: bool = true
+export var life: int
+
 
 export (DIR) var direction
 
@@ -24,6 +26,10 @@ var wps: float
 
 var init_water: int
 func _ready():
+	activate()
+
+func activate():
+	life = 5
 	init_water = water_p_second
 	wps = 1 / float(water_p_second)
 	$Timer.start(20)
@@ -50,22 +56,34 @@ func _physics_process(delta):
 
 
 func _on_Timer_timeout():
+	if life < 5:
+		life += 1
 	water_p_second += water_p_second + 1
 	wps = 1 / float(water_p_second)
 
 
 func _on_WaterSpawner_area_entered(area):
 	if is_active:
-		is_active = false
-		get_tree().call_group(\"audio\", \"play_hit\")
-		get_tree().call_group(\"ui\", \"add_points\", 100)
-		water_p_second = init_water
+		print_debug(life)
+		if life >= 0:
+			life -= 1
+			water_p_second *= 0.4
+			wps = 1 / float(water_p_second)
+			get_tree().call_group(\"audio\", \"play_inchit\")
+			get_tree().call_group(\"ui\", \"add_points\", 25)
+			$Timer.stop()
+			$Timer.start(20)
+		else:
+			is_active = false
+			get_tree().call_group(\"audio\", \"play_hit\")
+			get_tree().call_group(\"ui\", \"add_points\", 100)
+			water_p_second = init_water
 "
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 1.0
 
-[node name="WaterSpawner" type="Area2D"]
+[node name="WaterSpawner" type="Area2D" groups=["waterer"]]
 collision_layer = 2
 collision_mask = 2
 monitorable = false

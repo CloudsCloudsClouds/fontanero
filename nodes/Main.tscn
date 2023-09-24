@@ -24,8 +24,8 @@ func get_vpc() -> ViewportContainer:
 	return vpc
 
 
-func _on_Timer_timeout():
-	pass
+func time_up():
+	get_tree().reload_current_scene()
 "
 
 [sub_resource type="Shader" id=2]
@@ -77,11 +77,14 @@ func start_timer(new_time: float):
 func _process(delta):
 	if is_timer:
 		timer -= delta
-
 		set_text(String(ceil(timer)))
+		
+		if timer < 0:
+			is_timer = false
+			get_tree().call_group(\"watcher\", \"time_up\")
 "
 
-[node name="Main" type="Control"]
+[node name="Main" type="Control" groups=["watcher"]]
 pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -109,7 +112,7 @@ margin_top = 128.0
 margin_right = -128.0
 margin_bottom = -128.0
 
-[node name="Points" type="Label" parent="Border" groups=["ui"]]
+[node name="Points" type="Label" parent="Border" groups=["ui", "watcher"]]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -92.0
@@ -120,7 +123,7 @@ text = "0"
 align = 2
 script = SubResource( 4 )
 
-[node name="Timer" type="Label" parent="Border"]
+[node name="Timer" type="Label" parent="Border" groups=["watcher"]]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -20.0

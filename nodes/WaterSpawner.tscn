@@ -31,7 +31,7 @@ func activate():
 	life = 5
 	init_water = water_p_second
 	wps = 1 / float(water_p_second)
-	$Timer.start(20)
+	$Timer.start(15)
 
 
 func _physics_process(delta):
@@ -71,11 +71,12 @@ func _on_WaterSpawner_area_entered(area):
 			get_tree().call_group(\"audio\", \"play_inchit\")
 			get_tree().call_group(\"ui\", \"add_points\", 25)
 			$Timer.stop()
-			$Timer.start(20)
+			$Timer.start(15)
 		if life < 0:
 			is_active = false
 			get_tree().call_group(\"audio\", \"play_hit\")
 			get_tree().call_group(\"ui\", \"add_points\", 100)
+			get_tree().call_group(\"waterer\", \"mod_waterers_aviable\", -1)
 			water_p_second = init_water
 "
 

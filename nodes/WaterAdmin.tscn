@@ -18,6 +18,7 @@ func _ready():
 	for nodes in aviable_waterers:
 		if nodes.has_method(\"activate\"):
 			nodes.activate()
+			active_waterers += 1
 
 
 func add_water():
@@ -36,7 +37,8 @@ func mod_waterers_aviable(args1: int):
 func set_water(args1: int):
 	water_in_level += args1
 	if water_in_level >= water_limit:
-		get_tree().call_group(\"watcher\", \"water_limit_achieved\")"
+		get_tree().call_group(\"watcher\", \"water_limit_achieved\")
+"
 
 [node name="WaterAdmin" type="Node2D" groups=["waterer"]]
 script = SubResource( 1 )

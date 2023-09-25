@@ -30,14 +30,13 @@ func remove_water():
 func mod_waterers_aviable(args1: int):
 	active_waterers += args1
 	if active_waterers == 0:
-		get_tree().call_group(\"watcher\", \"stoped_waterers\")
+		get_tree().call_group(\"watcher\", \"stoped_waterers\", water_in_level)
 
 
 func set_water(args1: int):
 	water_in_level += args1
 	if water_in_level >= water_limit:
-		get_tree().call_group(\"watcher\", \"water_limit_achieved\")
-"
+		get_tree().call_group(\"watcher\", \"water_limit_achieved\")"
 
 [node name="WaterAdmin" type="Node2D" groups=["waterer"]]
 script = SubResource( 1 )

@@ -32,7 +32,7 @@ func water_limit_achieved():
 	pass
 
 
-func stoped_waterers():
+func stoped_waterers(water):
 	print_debug(\"Hurra!\")
 "
 

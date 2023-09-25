@@ -91,14 +91,14 @@ func play_maxwater():
 
 func play_inchit():
 	randomize()
-	var play_sound := int(rand_range(0.6, 3.4))
+	var play_sound: int = int(round(rand_range(0.6, 3.4)))
 	var inchit = AudioStreamPlayer.new()
-	match play_sound:
-		1:
+	match String(play_sound):
+		\"1\":
 			inchit.set_stream(inchit_sound1)
-		2:
+		\"2\":
 			inchit.set_stream(inchit_sound2)
-		3:
+		\"3\":
 			inchit.set_stream(inchit_sound3)
 		_:
 			inchit.set_stream(inchit_sound1)

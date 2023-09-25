@@ -26,6 +26,14 @@ func get_vpc() -> ViewportContainer:
 
 func time_up():
 	get_tree().reload_current_scene()
+
+
+func water_limit_achieved():
+	pass
+
+
+func stoped_waterers():
+	print_debug(\"Hurra!\")
 "
 
 [sub_resource type="Shader" id=2]

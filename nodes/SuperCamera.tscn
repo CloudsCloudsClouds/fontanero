@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Camera2D
+
+
+onready var vpc: ViewportContainer = get_tree().current_scene.get_vpc()
+
+export (NodePath) onready var objetive = get_node(objetive)
+
+onready var actual_cam_pos := global_position
+
+func _process(delta):
+	actual_cam_pos = lerp(actual_cam_pos, objetive.global_position, delta * 5)
+	
+	var subpixel = actual_cam_pos.round() - actual_cam_pos
+	
+	vpc.material.set_shader_param(\"cam_offset\", subpixel)
+	
+	global_position = actual_cam_pos.round()
+"
+
+[node name="SuperCamera" type="Camera2D"]
+current = true
+script = SubResource( 1 )
+objetive = NodePath("../Player")

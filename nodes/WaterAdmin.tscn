@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+#Admin del water
+
+onready var aviable_waterers: Array = get_children()
+var active_waterers: int = 0
+
+## Limite de agua, abstracto
+export var water_limit: int = 1
+
+var water_in_level: int = 0 setget set_water
+
+
+func _ready():
+	water_limit *= 30
+	for nodes in aviable_waterers:
+		if nodes.has_method(\"activate\"):
+			nodes.activate()
+
+
+func add_water():
+	set_water(1)
+
+func remove_water():
+	set_water(-1)
+
+
+func mod_waterers_aviable(args1: int):
+	active_waterers += args1
+	if active_waterers == 0:
+		get_tree().call_group(\"watcher\", \"stoped_waterers\")
+
+
+func set_water(args1: int):
+	water_in_level += args1
+	if water_in_level >= water_limit:
+		get_tree().call_group(\"watcher\", \"water_limit_achieved\")
+"
+
+[node name="WaterAdmin" type="Node2D" groups=["waterer"]]
+script = SubResource( 1 )

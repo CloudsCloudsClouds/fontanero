@@ -25,8 +25,7 @@ var counter := 0.0
 var wps: float
 
 var init_water: int
-func _ready():
-	activate()
+
 
 func activate():
 	life = 5
@@ -41,6 +40,7 @@ func _physics_process(delta):
 	if counter > wps:
 		var new: RigidBody2D = water.instance()
 		get_parent().add_child(new)
+		get_tree().call_group(\"waterer\", \"add_water\")
 		
 		new.position = position
 		counter = 0
@@ -72,7 +72,7 @@ func _on_WaterSpawner_area_entered(area):
 			get_tree().call_group(\"ui\", \"add_points\", 25)
 			$Timer.stop()
 			$Timer.start(20)
-		else:
+		if life < 0:
 			is_active = false
 			get_tree().call_group(\"audio\", \"play_hit\")
 			get_tree().call_group(\"ui\", \"add_points\", 100)

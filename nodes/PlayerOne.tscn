@@ -95,6 +95,7 @@ func _on_PunchArea_body_entered(body):
 				can_waterget = !can_waterget
 				get_tree().call_group(\"audio\", \"play_getwater\")
 			body.queue_free()
+			get_tree().call_group(\"waterer\", \"remove_water\")
 			water += 1
 			_color()
 
